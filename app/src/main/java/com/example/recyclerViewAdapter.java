@@ -5,17 +5,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TabHost;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.R;
-
 import java.util.ArrayList;
 
 public class recyclerViewAdapter extends RecyclerView.Adapter<recyclerViewAdapter.ViewHolder>  {
@@ -23,6 +17,7 @@ public class recyclerViewAdapter extends RecyclerView.Adapter<recyclerViewAdapte
     private static final String TAG = "recyclerViewAdapter";
     public interface Item_Click_Listener{
         void Item_Click(int position);
+        public boolean onLongClick(int position);
     }
     private Item_Click_Listener mListener;
 
@@ -30,7 +25,6 @@ public class recyclerViewAdapter extends RecyclerView.Adapter<recyclerViewAdapte
     public void Set_Click_Listener(Item_Click_Listener listener){
         mListener = listener;
     }
-
 
     private ArrayList<One_Task> mtasks_list = new ArrayList<>();
     private Context mContext;
@@ -52,7 +46,6 @@ public class recyclerViewAdapter extends RecyclerView.Adapter<recyclerViewAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Log.d(TAG, "onBindViewHolder: called.");
         holder.task_text.setText(mtasks_list.get(position).return_task_text());
         holder.image.setImageResource(mtasks_list.get(position).return_im_number());
     }
@@ -74,7 +67,6 @@ public class recyclerViewAdapter extends RecyclerView.Adapter<recyclerViewAdapte
             itemView.setOnClickListener(new View.OnClickListener()
             {@Override
                 public void onClick(View view){
-                Log.d(TAG, "onClick: click....");
                 if (listener != null)
                 {
                     int position = getAdapterPosition();
@@ -85,7 +77,19 @@ public class recyclerViewAdapter extends RecyclerView.Adapter<recyclerViewAdapte
             }
 
             });
+            itemView.setOnLongClickListener(new View.OnLongClickListener()
+            {@Override
+            public boolean onLongClick(View view){
+                if (listener != null)
+                {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        listener.onLongClick(position);
+                    }
+                }
+                return true;
+            }
+            });
         }
     }
-
 }
